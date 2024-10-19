@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعدين OTP</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        #time-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        #startMining {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #startMining:disabled {
+            background-color: #ccc;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #notifications {
+            color: #f0ad4e;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>تعدين OTP</h1>
+<div id="userInfo"></div>
+<div id="time-container">
+    <div id="timer">الوقت المتبقي: <span id="time">00:00:00</span></div>
+    <div id="balance">رصيدك الحالي: <span id="currentBalance">0</span> OTP</div>
+</div>
+<button id="startMining" onclick="startMining()">ابدأ التعدين</button>
+<div id="notifications"></div>
+<div class="button" onclick="showHelp()">الدليل</div>
+<div class="button" onclick="share()">شارك</div>
+
+<script>
+    let miningActive = false;
+    let totalTime = 86400; // 24 ساعة بالثواني
+    let remainingTime = totalTime;
+    let currentBalance = 0;
+
+    function startMining() {
+        if (!miningActive) {
+            miningActive = true;
+            document.getElementById("notifications").innerText = "التعدين جاري...";
+            updateBalance();
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        let timerInterval = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                miningActive = false;
+                document.getElementById("notifications").innerText = "انتهى وقت التعدين. يمكنك البدء مرة أخرى.";
+                document.getElementById("startMining").innerText = "ابدأ التعدين مرة أخرى";
+            } else {
+                remainingTime--;
+                updateTimerDisplay();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const hours = Math.floor(remainingTime / 3600);
+        const minutes = Math.floor((remainingTime % 3600) / 60);
+        const seconds = remainingTime % 60;
+        document.getElementById("time").innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function updateBalance() {
+        setInterval(() => {
+            if (miningActive) {
+                currentBalance += 0.01; // زيادة الرصيد بمقدار 0.01 كل دقيقة
+                document.getElementById("currentBalance").innerText = currentBalance.toFixed(2); // عرض الرصيد بدقة 2
+            }
+        }, 60000); // زيادة الرصيد كل 60 ثانية (1 دقيقة)
+    }
+
+    function showHelp() {
+        alert("هذا هو دليل المستخدم. يمكنك البدء بالتعدين عن طريق الضغط على الزر 'ابدأ التعدين'.");
+    }
+
+    function share() {
+        alert("مشاركة الإنجازات قيد التطوير.");
+    }
+
+    // إظهار معلومات المستخدم عند التحميل
+    document.addEventListener("DOMContentLoaded", () => {
+        const username = "Zaki"; // استخدم اسم المستخدم الحقيقي
+        document.getElementById("userInfo").innerText = `مرحبًا، ${username}!`;
+    });
+</script>
+
+</body>
+</html>
